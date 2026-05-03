@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Summer Code Camp – Skyline School, Sausar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Permanent+Marker&family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    /* ─── THEME VARIABLES ─────────────────────────────────────── */
+    :root {
+      --orange:   #FF6B00;
+      --yellow:   #FFD700;
+      --red:      #CC0000;
+      --ink:      #0A0A0A;
+      --paper:    #FFF8E7;
+      --panel-bg: #1A1A2E;
+      --blue-dark:#0F3460;
+      --white:    #FFFFFF;
+      --shadow:   4px 4px 0px #000;
+      --radius:   6px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ─── MANGA HALFTONE BACKGROUND ──────────────────────────── */
+    body {
+      background-color: var(--paper);
+      background-image:
+        radial-gradient(circle, #ccc 1px, transparent 1px);
+      background-size: 18px 18px;
+      font-family: 'Nunito', sans-serif;
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ─── SPEED LINES OVERLAY ────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: repeating-conic-gradient(
+        from 0deg at 50% 50%,
+        transparent 0deg,
+        rgba(255,107,0,0.03) 1deg,
+        transparent 2deg
+      );
+    }
+
+    /* ─── HEADER / HERO ──────────────────────────────────────── */
+    header {
+      position: relative;
+      background: var(--ink);
+      overflow: hidden;
+      border-bottom: 6px solid var(--orange);
+      z-index: 10;
+    }
+
+    .hero-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+    }
+
+    /* dramatic speed-line burst behind title */
+    .hero-inner::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 900px; height: 900px;
+      transform: translate(-50%,-50%);
+      background: repeating-conic-gradient(
+        from 0deg at 50% 50%,
+        rgba(255,107,0,0.15) 0deg 3deg,
+        transparent 3deg 6deg
+      );
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    .badge {
+      background: var(--orange);
+      color: #fff;
+      font-family: 'Bangers', cursive;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      padding: 4px 16px;
+      border: 3px solid #fff;
+      border-radius: 40px;
+      box-shadow: 3px 3px 0 #000;
+      text-transform: uppercase;
+    }
+    .badge.red   { background: var(--red); }
+    .badge.blue  { background: var(--blue-dark); }
+
+    .hero-title {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2.6rem, 7vw, 5.5rem);
+      color: var(--yellow);
+      text-shadow:
+        -3px -3px 0 #000,
+         3px -3px 0 #000,
+        -3px  3px 0 #000,
+         3px  3px 0 #000,
+         6px  6px 0 var(--orange);
+      letter-spacing: 4px;
+      text-align: center;
+      line-height: 1.05;
+      z-index: 1;
+    }
+
+    .hero-sub {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(1.1rem, 3vw, 1.8rem);
+      color: var(--white);
+      letter-spacing: 3px;
+      text-align: center;
+      z-index: 1;
+    }
+
+    .hero-date {
+      background: var(--yellow);
+      color: var(--ink);
+      font-family: 'Bangers', cursive;
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      padding: 6px 24px;
+      border: 3px solid var(--ink);
+      border-radius: 4px;
+      box-shadow: var(--shadow);
+      z-index: 1;
+    }
+
+    /* ─── MAIN WRAPPER ───────────────────────────────────────── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── SECTION PANELS (manga panels) ─────────────────────── */
+    .panel {
+      background: var(--white);
+      border: 4px solid var(--ink);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 36px;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      background: var(--ink);
+      color: var(--yellow);
+      font-family: 'Bangers', cursive;
+      font-size: 1.7rem;
+      letter-spacing: 3px;
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .panel-header .icon { font-size: 1.6rem; }
+
+    .panel-body { padding: 24px; }
+
+    /* ─── ABOUT — TECHNOVENTOR ───────────────────────────────── */
+    .tv-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media(max-width:640px){ .tv-grid { grid-template-columns: 1fr; } }
+
+    .tv-card {
+      border: 3px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 18px;
+      background: var(--paper);
+      box-shadow: 3px 3px 0 var(--orange);
+    }
+    .tv-card h3 {
+      font-family: 'Bangers', cursive;
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      color: var(--red);
+      margin-bottom: 8px;
+    }
+    .tv-card p { font-size: 0.95rem; line-height: 1.6; }
+
+    .tv-logo-block {
+      display: flex; align-items: center; gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .tv-logo-text {
+      font-family: 'Bangers', cursive;
+      font-size: 2.8rem;
+      color: var(--orange);
+      text-shadow: 3px 3px 0 var(--ink);
+      letter-spacing: 2px;
+    }
+    .tv-tagline {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--blue-dark);
+      border-left: 4px solid var(--orange);
+      padding-left: 12px;
+    }
+
+    /* ─── INSTRUCTOR CARD ────────────────────────────────────── */
+    .instructor-card {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .instructor-avatar {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      border: 5px solid var(--orange);
+      box-shadow: var(--shadow);
+      background: var(--panel-bg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      flex-shrink: 0;
+    }
+    .instructor-info h3 {
+      font-family: 'Bangers', cursive;
+      font-size: 2rem;
+      letter-spacing: 2px;
+      color: var(--red);
+    }
+    .instructor-role {
+      display: inline-block;
+      background: var(--orange);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 2px 12px;
+      border-radius: 40px;
+      margin: 6px 0 10px;
+    }
+    .instructor-bio { font-size: 0.95rem; line-height: 1.7; }
+    .instructor-bio strong { color: var(--red); }
+
+    .stat-chips {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px;
+    }
+    .chip {
+      background: var(--panel-bg);
+      color: var(--yellow);
+      font-family: 'Bangers', cursive;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      padding: 4px 14px;
+      border-radius: 40px;
+      border: 2px solid var(--ink);
+    }
+
+    /* ─── CAMP SCHEDULE ──────────────────────────────────────── */
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media(max-width:600px){ .schedule-grid{ grid-template-columns: 1fr; } }
+
+    .day-card {
+      border: 3px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 3px 3px 0 #000;
+    }
+    .day-card .day-title {
+      background: var(--orange);
+      color: #fff;
+      font-family: 'Bangers', cursive;
+      font-size: 1.4rem;
+      letter-spacing: 2px;
+      padding: 8px 16px;
+      border-bottom: 3px solid var(--ink);
+    }
+    .day-items { list-style: none; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+    .day-items li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.9rem;
+      border-bottom: 1px dashed #ccc;
+      padding-bottom: 6px;
+    }
+    .day-items li:last-child { border-bottom: none; }
+    .time-tag {
+      background: var(--ink);
+      color: var(--yellow);
+      font-family: 'Bangers', cursive;
+      font-size: 0.85rem;
+      padding: 1px 8px;
+      border-radius: 3px;
+      white-space: nowrap;
+      letter-spacing: 1px;
+    }
+
+    /* ─── STUDENTS GRID ──────────────────────────────────────── */
+    #students-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 18px;
+    }
+
+    .student-card {
+      border: 3px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--paper);
+      overflow: hidden;
+      box-shadow: 3px 3px 0 var(--orange);
+      transition: transform 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+    .student-card:hover {
+      transform: translate(-2px,-3px);
+      box-shadow: 6px 6px 0 var(--orange);
+    }
+
+    .student-photo {
+      width: 100%; aspect-ratio: 1;
+      object-fit: cover;
+      border-bottom: 3px solid var(--ink);
+      background: #ddd;
+    }
+    .student-photo-placeholder {
+      width: 100%; aspect-ratio: 1;
+      background: linear-gradient(135deg, var(--panel-bg), var(--blue-dark));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      border-bottom: 3px solid var(--ink);
+    }
+
+    .student-info { padding: 10px 12px; }
+    .student-name {
+      font-family: 'Bangers', cursive;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      color: var(--ink);
+    }
+    .student-grade {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .student-links {
+      display: flex; gap: 6px; padding: 0 12px 10px; flex-wrap: wrap;
+    }
+    .s-btn {
+      display: inline-block;
+      font-family: 'Bangers', cursive;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      padding: 3px 10px;
+      border: 2px solid var(--ink);
+      border-radius: 3px;
+      text-decoration: none;
+      transition: background 0.1s;
+    }
+    .s-btn.website { background: var(--orange); color: #fff; }
+    .s-btn.paper   { background: var(--yellow); color: var(--ink); }
+    .s-btn:hover   { filter: brightness(1.15); }
+
+    /* loading / error states */
+    #students-status {
+      grid-column: 1 / -1;
+      text-align: center;
+      font-family: 'Bangers', cursive;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      color: var(--orange);
+      padding: 40px;
+    }
+
+    /* ─── SPEECH BUBBLE FOOTER ───────────────────────────────── */
+    footer {
+      position: relative;
+      background: var(--ink);
+      color: var(--yellow);
+      text-align: center;
+      padding: 28px 20px;
+      font-family: 'Bangers', cursive;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      border-top: 6px solid var(--orange);
+      z-index: 10;
+    }
+    footer span { color: var(--orange); }
+
+    /* ─── FX: onomatopoeia decorations ──────────────────────── */
+    .fx {
+      position: absolute;
+      font-family: 'Bangers', cursive;
+      font-size: 5rem;
+      letter-spacing: 4px;
+      opacity: 0.05;
+      pointer-events: none;
+      user-select: none;
+      color: var(--orange);
+      z-index: 0;
+    }
+    .fx-1 { top: 60px; left: -20px; transform: rotate(-15deg); }
+    .fx-2 { top: 10px; right: -10px; transform: rotate(10deg); }
+
+    /* ─── SCROLL REVEAL ──────────────────────────────────────── */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.5s, transform 0.5s; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ─── NARUTO HEADBAND DIVIDER ────────────────────────────── */
+    .divider {
+      text-align: center;
+      margin: 8px 0 20px;
+      font-family: 'Bangers', cursive;
+      font-size: 1.1rem;
+      letter-spacing: 4px;
+      color: var(--orange);
+      position: relative;
+    }
+    .divider::before,.divider::after {
+      content:'';
+      display:inline-block;
+      width:60px; height:3px;
+      background: var(--orange);
+      vertical-align: middle;
+      margin: 0 12px;
+    }
+
+    /* ─── EDIT NOTE (developer hint) ────────────────────────── */
+    .dev-note {
+      background: #fffbcc;
+      border: 2px dashed var(--orange);
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: #555;
+      margin-top: 14px;
+      display: none; /* visible only when SHOW_DEV_NOTES = true */
+    }
+    .dev-note code { background: #eee; padding: 1px 5px; border-radius: 3px; font-size: 0.82rem; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════ HEADER ═══════════════════════════════════ -->
+<header>
+  <div class="hero-inner">
+    <div class="badge-row">
+      <div class="badge">🏫 Skyline School · Sausar</div>
+      <div class="badge red">Grades 4–7</div>
+      <div class="badge blue">May 3–4, 2025</div>
+    </div>
+    <div class="hero-title">SUMMER<br>CODE CAMP</div>
+    <div class="hero-sub">⚡ BUILD YOUR FIRST WEBSITE · BELIEVE IT! ⚡</div>
+    <div class="hero-date">📅 TODAY &amp; TOMORROW · 35 YOUNG SHINOBI</div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════ MAIN ════════════════════════════════════ -->
+<main>
+
+  <!-- ── ABOUT TECHNOVENTOR ─────────────────────────────────────────────────── -->
+  <section class="panel reveal" id="about">
+    <div class="panel-header"><span class="icon">🔥</span> ABOUT TECHNOVENTOR NAGPUR</div>
+    <div class="panel-body">
+      <div class="tv-logo-block">
+        <div class="tv-logo-text">TECHNOVENTOR</div>
+        <div class="tv-tagline">Empowering Young Minds<br>Through Technology</div>
+      </div>
+      <div class="divider">· WHO WE ARE ·</div>
+      <div class="tv-grid">
+        <div class="tv-card">
+          <h3>🌟 Our Mission</h3>
+          <p>Technoventor Nagpur is a tech-education team passionate about bringing coding, web design, robotics, and digital skills to school students across Maharashtra. We believe every child deserves to be a creator — not just a consumer — of technology.</p>
+        </div>
+        <div class="tv-card">
+          <h3>🏆 What We Do</h3>
+          <p>We design and run hands-on technology camps, workshops, and after-school programs. From building websites to programming robots, our curriculum is made to be exciting, age-appropriate, and immediately practical.</p>
+        </div>
+        <div class="tv-card">
+          <h3>🗾 Why Manga &amp; Fun?</h3>
+          <p>We believe learning is best when it's joyful. Just like Naruto never gave up on becoming Hokage, our students never give up on cracking code! We mix storytelling, games, and real projects to make tech unforgettable.</p>
+        </div>
+        <div class="tv-card">
+          <h3>📍 Based In</h3>
+          <p>Nagpur, Maharashtra. We partner with schools across the Vidarbha region and beyond, running summer camps, science fairs, and STEM workshops for students from Grade 1 to Grade 12.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── INSTRUCTOR ─────────────────────────────────────────────────────────── -->
+  <section class="panel reveal" id="instructor">
+    <div class="panel-header"><span class="icon">👨‍💻</span> CAMP SENSEI (INSTRUCTOR)</div>
+    <div class="panel-body">
+      <div class="instructor-card">
+        <div class="instructor-avatar">🥷</div>
+        <div class="instructor-info">
+          <!-- ════════════════════════════════════════════════════════════════
+               ✏️  EDIT YOUR INFO BELOW
+               ════════════════════════════════════════════════════════════════ -->
+          <h3>YOUR NAME HERE</h3>
+          <span class="instructor-role">Lead Instructor · Technoventor Nagpur</span>
+          <p class="instructor-bio">
+            Hi! I'm <strong>YOUR NAME</strong>, a web developer and educator with Technoventor Nagpur.
+            I love teaching kids how to build things on the internet — from their first HTML tag to full interactive websites.
+            I have X years of experience in <strong>web development / education / tech training</strong> and
+            I'm super excited to be your sensei at Skyline School's Summer Code Camp!
+            <br><br>
+            During this camp, we'll explore <strong>HTML &amp; CSS</strong>, design our own web pages, and you'll
+            walk away with a real website you built yourself. No experience needed — just curiosity and ninja spirit! 🍥
+          </p>
+          <div class="stat-chips">
+            <div class="chip">⚡ HTML &amp; CSS</div>
+            <div class="chip">🌐 Web Design</div>
+            <div class="chip">🤖 Tech Education</div>
+            <div class="chip">🏫 Nagpur</div>
+            <!-- Add more skills as chips here -->
+          </div>
+          <!-- ════ END EDIT BLOCK ════ -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SCHEDULE ───────────────────────────────────────────────────────────── -->
+  <section class="panel reveal" id="schedule">
+    <div class="panel-header"><span class="icon">📅</span> CAMP SCHEDULE</div>
+    <div class="panel-body">
+      <div class="schedule-grid">
+        <div class="day-card">
+          <div class="day-title">📅 DAY 1 — May 3 (Today)</div>
+          <ul class="day-items">
+            <li><span class="time-tag">9:00</span> Welcome &amp; Icebreaker — Meet your squad!</li>
+            <li><span class="time-tag">9:30</span> What is the Internet? How websites work</li>
+            <li><span class="time-tag">10:15</span> Your first HTML tags — Hello World!</li>
+            <li><span class="time-tag">11:00</span> Break — Snack Time 🍩</li>
+            <li><span class="time-tag">11:20</span> Build your first web page on paper ✏️</li>
+            <li><span class="time-tag">12:30</span> Lunch 🍱</li>
+            <li><span class="time-tag">1:30</span> Type it up — HTML in a real editor</li>
+            <li><span class="time-tag">3:00</span> Show &amp; Tell — present your page!</li>
+            <li><span class="time-tag">3:30</span> Wrap-up &amp; Q&amp;A</li>
+          </ul>
+        </div>
+        <div class="day-card">
+          <div class="day-title">📅 DAY 2 — May 4 (Tomorrow)</div>
+          <ul class="day-items">
+            <li><span class="time-tag">9:00</span> Recap — Quiz time ⚡</li>
+            <li><span class="time-tag">9:30</span> CSS Magic — Colors, fonts, backgrounds</li>
+            <li><span class="time-tag">10:30</span> Style your website — make it yours!</li>
+            <li><span class="time-tag">11:00</span> Break 🍩</li>
+            <li><span class="time-tag">11:20</span> Add images, links &amp; fun content</li>
+            <li><span class="time-tag">12:30</span> Lunch 🍱</li>
+            <li><span class="time-tag">1:30</span> Final polish &amp; debugging</li>
+            <li><span class="time-tag">2:30</span> 🎉 Grand Presentation — All 35 websites!</li>
+            <li><span class="time-tag">3:30</span> Certificates &amp; Farewell 🏆</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STUDENT WEBSITES GRID ──────────────────────────────────────────────── -->
+  <section class="panel reveal" id="students">
+    <div class="panel-header"><span class="icon">🥷</span> STUDENT NINJA WEBSITES — 35 CODERS</div>
+    <div class="panel-body">
+      <p style="margin-bottom:18px; font-weight:800; color:var(--blue-dark);">
+        Click any ninja card to visit their website or see their first hand-written page! 🎉
+      </p>
+
+      <!-- ════════════════════════════════════════════════════════════════════
+           ✏️  GOOGLE SHEET CONFIGURATION — EDIT THIS BLOCK
+           ════════════════════════════════════════════════════════════════════
+           1. Make a copy of the template sheet provided.
+           2. Publish it to the web:
+              Sheet → File → Share → Publish to web → CSV → Publish
+           3. Copy the CSV URL and paste it below as SHEET_CSV_URL.
+
+           Your URL will look like:
+           https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/export?format=csv&gid=0
+      ════════════════════════════════════════════════════════════════════════ -->
+
+      <div id="students-grid">
+        <div id="students-status">⚡ Loading student data...</div>
+      </div>
+
+      <div class="dev-note" id="dev-note">
+        <strong>🛠️ Developer Note:</strong> Edit the <code>SHEET_CSV_URL</code> constant in the
+        <code>&lt;script&gt;</code> block at the bottom of this file to point to your published
+        Google Sheet CSV URL. See the Excel template for the required column names.
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════════════════════ FOOTER ══════════════════════════════════ -->
+<footer>
+  Made with 💥 by <span>Technoventor Nagpur</span> ·
+  Summer Code Camp @ Skyline School, Sausar ·
+  <span>May 3–4, 2025</span>
+  <br>
+  <small style="opacity:0.6; font-size:0.75rem; letter-spacing:1px; font-family:'Nunito',sans-serif; font-weight:600;">
+    "I never go back on my word — that's my nindo, my ninja way!" — Naruto
+  </small>
+</footer>
+
+<!-- ═══════════════════════════════════ SCRIPT ══════════════════════════════════ -->
+<script>
+  /* ══════════════════════════════════════════════════════════════════════════════
+     ✏️  STEP 1: PASTE YOUR GOOGLE SHEET CSV URL HERE
+     ══════════════════════════════════════════════════════════════════════════════
+     How to get the URL:
+       1. Open your Google Sheet.
+       2. Go to File → Share → Publish to the web.
+       3. Choose: Entire Document | CSV | Publish.
+       4. Copy the link and replace the string below.
+
+     Example URL format:
+     https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE/pub?output=csv
+  ══════════════════════════════════════════════════════════════════════════════ */
+  const SHEET_CSV_URL = "PASTE_YOUR_GOOGLE_SHEET_CSV_URL_HERE";
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     ✏️  STEP 2 (optional): Set to true to show the developer hint note
+  ══════════════════════════════════════════════════════════════════════════════ */
+  const SHOW_DEV_NOTES = true;
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     CSV PARSER — no libraries needed
+  ══════════════════════════════════════════════════════════════════════════════ */
+  function parseCSV(text) {
+    const rows = [];
+    const lines = text.trim().split("\n");
+    const headers = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g, ""));
+    for (let i = 1; i < lines.length; i++) {
+      const vals = lines[i].match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g) || [];
+      const row = {};
+      headers.forEach((h, idx) => {
+        row[h] = (vals[idx] || "").trim().replace(/^"|"$/g, "");
+      });
+      rows.push(row);
+    }
+    return rows;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     GOOGLE DRIVE IMAGE PROXY
+     If photo URLs are Google Drive share links, convert them to direct image URLs.
+     Supports: drive.google.com/file/d/FILE_ID/view
+  ══════════════════════════════════════════════════════════════════════════════ */
+  function driveDirectUrl(url) {
+    if (!url) return "";
+    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (match) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    return url;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     BUILD STUDENT CARDS
+     Expected CSV columns (case-sensitive):
+       Name          — student's full name
+       Grade         — e.g. "Grade 5"
+       PhotoURL      — URL to student photo (Google Drive share link or direct URL)
+       PaperURL      — URL to photo of their hand-written page (same format)
+       WebsiteURL    — URL to their published website
+  ══════════════════════════════════════════════════════════════════════════════ */
+  function buildStudentCards(students) {
+    const grid = document.getElementById("students-grid");
+    grid.innerHTML = "";
+
+    if (!students.length) {
+      grid.innerHTML = `<div id="students-status">No student data found. Check your sheet!</div>`;
+      return;
+    }
+
+    students.forEach((s, i) => {
+      const name      = s["Name"]       || "Student " + (i + 1);
+      const grade     = s["Grade"]      || "";
+      const photoUrl  = driveDirectUrl(s["PhotoURL"]  || "");
+      const paperUrl  = driveDirectUrl(s["PaperURL"]  || "");
+      const websiteUrl= s["WebsiteURL"] || "";
+
+      // --- Photo element
+      let photoEl;
+      if (photoUrl) {
+        photoEl = `<img class="student-photo" src="${photoUrl}" alt="${name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                   <div class="student-photo-placeholder" style="display:none">🥷</div>`;
+      } else {
+        photoEl = `<div class="student-photo-placeholder">🥷</div>`;
+      }
+
+      // --- Action links
+      let links = "";
+      if (websiteUrl) links += `<a class="s-btn website" href="${websiteUrl}" target="_blank" rel="noopener">🌐 Website</a>`;
+      if (paperUrl)   links += `<a class="s-btn paper"   href="${paperUrl}"   target="_blank" rel="noopener">📝 Paper</a>`;
+
+      const card = document.createElement("div");
+      card.className = "student-card";
+      card.style.animationDelay = (i * 40) + "ms";
+      card.innerHTML = `
+        ${photoEl}
+        <div class="student-info">
+          <div class="student-name">${name}</div>
+          <div class="student-grade">${grade}</div>
+        </div>
+        <div class="student-links">${links || '<span style="font-size:0.8rem;color:#999;padding:0 4px">Coming soon…</span>'}</div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     FETCH DATA FROM GOOGLE SHEET
+  ══════════════════════════════════════════════════════════════════════════════ */
+  async function loadStudents() {
+    const statusEl = document.getElementById("students-status");
+
+    if (SHEET_CSV_URL === "https://docs.google.com/spreadsheets/d/e/2PACX-1vR0QmNIhvznfNT19ZdQznUOBGE_w5EQHaEbhCgi2gmzql7OEG0azxTL7H5D7fd9Cw/pub?output=csv") {
+      statusEl.innerHTML = `⚠️ No sheet connected yet. Edit <b>SHEET_CSV_URL</b> in the script.`;
+      return;
+    }
+
+    try {
+      // Use a CORS proxy if needed; the published Google Sheet CSV is publicly accessible
+      const resp = await fetch(SHEET_CSV_URL);
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      const text = await resp.text();
+      const students = parseCSV(text);
+      buildStudentCards(students);
+    } catch (err) {
+      statusEl.innerHTML = `❌ Could not load sheet. Make sure it's published as CSV.<br><small>${err.message}</small>`;
+      console.error(err);
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     SCROLL REVEAL
+  ══════════════════════════════════════════════════════════════════════════════ */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     INIT
+  ══════════════════════════════════════════════════════════════════════════════ */
+  if (SHOW_DEV_NOTES) document.getElementById("dev-note").style.display = "block";
+  loadStudents();
+</script>
+
+</body>
+</html>
