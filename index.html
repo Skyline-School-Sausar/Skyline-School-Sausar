@@ -229,7 +229,17 @@
       gap: 24px;
       align-items: flex-start;
       flex-wrap: wrap;
+
+      padding: 20px;
+  border-radius: 20px;
+  border: 2px solid #00f0ff;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+  transition: 0.3s;
     }
+    .instructor-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.7);
+}
     .instructor-avatar {
   width: 120px;
   height: 120px;
@@ -238,8 +248,9 @@
   margin: auto;
   border: 3px solid #fff;
 }
+    
 
-.instructor-avatar img {
+  .instructor-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -493,10 +504,10 @@
 
   <!-- ── ABOUT TECHNOVENTOR ─────────────────────────────────────────────────── -->
   <section class="panel reveal" id="about">
-    <div class="panel-header"><span class="icon">🔥</span> ABOUT TECHNOVENTOR INNOVATIONS NAGPUR</div>
+    <div class="panel-header"><span class="icon">🔥</span> ABOUT TECHNOVENTOR INNOVATION, NAGPUR</div>
     <div class="panel-body">
       <div class="tv-logo-block">
-        <div class="tv-logo-text">TECHNOVENTOR INNOVATIONS</div>
+        <div class="tv-logo-text">TECHNOVENTOR INNOVATION</div>
         <div class="tv-tagline">Empowering Young Minds<br>Through Technology</div>
       </div>
       <div class="divider">· WHO WE ARE ·</div>
@@ -533,16 +544,25 @@
           <!-- ════════════════════════════════════════════════════════════════
                ✏️  EDIT YOUR INFO BELOW
                ════════════════════════════════════════════════════════════════ -->
-          <h3>Nikhil Dewalkar</h3>
-          <span class="instructor-role">Lead Instructor · Technoventor Nagpur</span>
-          <p class="instructor-bio">
-            Hi! I'm <strong>Nikhil Dewalkar</strong>, an educator and K12 Makerspace Co Ordinator with Technoventor Nagpur.
-            I love teaching kids how to build things practically — I love teaching activities, to my students in STEAM LAB at SKYLINE SCHOOL, SAUSAR 
-            and , I'm super excited to be your sensei at Skyline School's Summer Code Camp!
-            <br><br>
-            During this camp, we'll explore <strong>HTML &amp; CSS</strong>, design our own web pages, and you'll
-            walk away with a real website you built yourself. No experience needed — just curiosity and ninja spirit! 🍥
-          </p>
+       
+  <h3>Nikhil Dewalkar</h3>
+  <span class="instructor-role">Lead Instructor · Technoventor, Nagpur</span>
+
+  <p class="instructor-bio">
+    Hi! I'm <strong>Nikhil Dewalkar</strong>, an educator and K-12 Makerspace Coordinator at Technoventor Innovation, Nagpur.  
+    I’m passionate about teaching students how to build things practically through hands-on activities in the STEAM Lab at Skyline School, Sausar.  
+
+    <br><br>
+
+    I’m super excited to be your sensei at Skyline School’s Summer Code Camp! 🚀  
+    During this camp, we’ll explore <strong>HTML &amp; CSS</strong>, design our own web pages, and you’ll walk away with a real website that you build yourself.  
+
+    <br><br>
+
+    No prior experience needed — just curiosity and a ninja spirit! 🍥
+  </p>
+
+</div>
           <div class="stat-chips">
             <div class="chip">⚡ HTML &amp; CSS</div>
             <div class="chip">🌐 Web Design</div>
@@ -562,31 +582,29 @@
     <div class="panel-body">
       <div class="schedule-grid">
         <div class="day-card">
-          <div class="day-title">📅 DAY 1 — May 3 (Today)</div>
+          <div class="day-title">📅 DAY 1 — May 3 (SUNDAY)</div>
           <ul class="day-items">
-            <li><span class="time-tag">9:00</span> Welcome &amp; Icebreaker — Meet your squad!</li>
-            <li><span class="time-tag">9:30</span> What is the Internet? How websites work</li>
-            <li><span class="time-tag">10:15</span> Your first HTML tags — Hello World!</li>
-            <li><span class="time-tag">11:00</span> Break — Snack Time 🍩</li>
-            <li><span class="time-tag">11:20</span> Build your first web page on paper ✏️</li>
-            <li><span class="time-tag">12:30</span> Lunch 🍱</li>
-            <li><span class="time-tag">1:30</span> Type it up — HTML in a real editor</li>
-            <li><span class="time-tag">3:00</span> Show &amp; Tell — present your page!</li>
-            <li><span class="time-tag">3:30</span> Wrap-up &amp; Q&amp;A</li>
+            <li><span class="time-tag">8:30</span> Welcome &amp; Icebreaker — Meet your squad!</li>
+            <li><span class="time-tag">8:45</span> What is the Internet? How websites work</li>
+            <li><span class="time-tag">9:00</span> Your first HTML tags — Hello World!</li>
+            <li><span class="time-tag">9:15</span> Break — Snack Time 🍩</li>
+            <li><span class="time-tag">9.30</span> Build your first web page on paper ✏️</li>
+            <li><span class="time-tag">10:30</span> Type it up — HTML in a real editor</li>
+            <li><span class="time-tag">11:00</span> Show &amp; Tell — present your page!</li>
+            <li><span class="time-tag">11:30</span> Wrap-up &amp; Q&amp;A</li>
           </ul>
         </div>
         <div class="day-card">
-          <div class="day-title">📅 DAY 2 — May 4 (Tomorrow)</div>
+          <div class="day-title">📅 DAY 2 — May 4 (MONDAY)</div>
           <ul class="day-items">
-            <li><span class="time-tag">9:00</span> Recap — Quiz time ⚡</li>
-            <li><span class="time-tag">9:30</span> CSS Magic — Colors, fonts, backgrounds</li>
-            <li><span class="time-tag">10:30</span> Style your website — make it yours!</li>
-            <li><span class="time-tag">11:00</span> Break 🍩</li>
-            <li><span class="time-tag">11:20</span> Add images, links &amp; fun content</li>
-            <li><span class="time-tag">12:30</span> Lunch 🍱</li>
-            <li><span class="time-tag">1:30</span> Final polish &amp; debugging</li>
-            <li><span class="time-tag">2:30</span> 🎉 Grand Presentation — All 35 websites!</li>
-            <li><span class="time-tag">3:30</span> Certificates &amp; Farewell 🏆</li>
+            <li><span class="time-tag">8:30</span> Recap — Quiz time ⚡</li>
+            <li><span class="time-tag">8:45</span> CSS Magic — Colors, fonts, backgrounds</li>
+            <li><span class="time-tag">9:00</span> Style your website — make it yours!</li>
+            <li><span class="time-tag">9:15</span> Break 🍩</li>
+            <li><span class="time-tag">9:30</span> Add images, links &amp; fun content</li>
+            <li><span class="time-tag">10:30</span> Final polish &amp; debugging</li>
+            <li><span class="time-tag">11:00</span> 🎉 Grand Presentation — All 26 websites!</li>
+            <li><span class="time-tag">11:30</span> Farewell 🏆</li>
           </ul>
         </div>
       </div>
